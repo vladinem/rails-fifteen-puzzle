@@ -1,0 +1,45 @@
+<h1 class="text-center">Игра "Пятнашки"</h1>
+
+<!-- Отображение времени и количества ходов -->
+<p>Время: <%= @elapsed_time %> сек</p>
+<p>Ходы: <%= @moves %></p>
+
+<div class="d-flex justify-content-center">
+  <table class="table table-bordered w-auto">
+    <!-- Сообщение о победе -->
+    <% if @won %>
+      <p style="color: green; font-weight: bold;">
+        Поздравляем! Вы выиграли за <%= @moves %> ходов и <%= @elapsed_time %> секунд!
+      </p>
+    <% end %>
+
+    <!-- Отображение игрового поля -->
+    <% @board.each do |row| %>
+      <tr>
+        <% row.each do |tile| %>
+          <td class="text-center p-3">
+            <% if tile %>
+              <!-- Кнопка для перемещения плитки -->
+              <form action="/move" method="post">
+                <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+                <input type="hidden" name="tile" value="<%= tile %>">
+                <button class="btn btn-primary btn-lg"><%= tile %></button>
+              </form>
+            <% else %>
+              <!-- Пустая клетка -->
+              <div class="btn btn-secondary btn-lg disabled" style="width: 60px; height: 60px;"></div>
+            <% end %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+
+  <br>
+  <div class="text-center my-3">
+    <!-- Кнопка "Новая игра" для перезапуска -->
+    <%= form_with url: restart_path, method: :post do %>
+      <%= submit_tag "Новая игра", class: "btn btn-danger" %>
+    <% end %>
+  </div>
+</div>
